@@ -23,12 +23,15 @@ export default function RegistrationScreen() {
   const [isShowPassword, setIsShowPassword] = useState(false);
   
 
-  const keyboardHide = () => {
+  const registration = () => {
+    if (!state.login || !state.email || !state.password) {
+      alert("Будь ласка, введіть всі дані!!!");
+      return;
+    }
     setIsShowKeyboard(false);
-    Keyboard.dismiss();
-       console.log(state);
-       setState(initialState);
-       setIsShowPassword(false);
+    console.log(state);
+    setIsShowPassword(false);
+    setState(initialState);
   };
 
   return (
@@ -84,7 +87,7 @@ export default function RegistrationScreen() {
           <TouchableOpacity
             activeOpacity={0.7}
             style={styles.button}
-            onPress={keyboardHide}
+            onPress={registration}
           >
             <Text style={styles.text}>Зареєстуватися</Text>
           </TouchableOpacity>

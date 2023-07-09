@@ -21,13 +21,17 @@ export default function LoginScreen() {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(true);
 
-  const keyboardHide = () => {
+  const login = () => {
+    if (!state.email || !state.password) {
+      alert("Будь ласка, введіть всі дані!!!");
+      return;
+    }
     setIsShowKeyboard(false);
-    // Keyboard.dismiss();
     console.log(state);
-    setState(initialState);
     setIsShowPassword(false);
+    setState(initialState);
   };
+
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : ""}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -67,7 +71,7 @@ export default function LoginScreen() {
           <TouchableOpacity
             activeOpacity={0.7}
             style={styles.button}
-            onPress={keyboardHide}
+            onPress={login}
           >
             <Text style={styles.text}>Увійти</Text>
           </TouchableOpacity>
