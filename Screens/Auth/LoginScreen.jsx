@@ -5,26 +5,25 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   Platform,
   KeyboardAvoidingView,
   Keyboard,
+  TouchableWithoutFeedback,
+  ImageBackground,
 } from "react-native";
 
 const initialState = {
-  login: "",
   email: "",
   password: "",
 };
 
-export default function RegistrationScreen() {
+export default function LoginScreen({ navigation }) {
   const [state, setState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-  const [isShowPassword, setIsShowPassword] = useState(false);
-  
+  const [isShowPassword, setIsShowPassword] = useState(true);
 
-  const registration = () => {
-    if (!state.login || !state.email || !state.password) {
+  const login = () => {
+    if (!state.email || !state.password) {
       alert("Будь ласка, введіть всі дані!!!");
       return;
     }
@@ -32,28 +31,19 @@ export default function RegistrationScreen() {
     console.log(state);
     setIsShowPassword(false);
     setState(initialState);
+     navigation.navigate("Home", { screen: "Posts" });
   };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : ""}>
+   <View style={styles.container}>
+      <ImageBackground
+        source={require("../../assets/images/PhotoBG.jpg")}
+        style={styles.image}
+      >
+     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : ""}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.form}>
-          <View style={styles.image}>
-            <TouchableOpacity style={styles.btnAddImage}>
-              <Text style={styles.textAddImage}>+</Text>
-            </TouchableOpacity>
-          </View>
-
-          <Text style={styles.title}>Реєстрація</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Логін"
-            value={state.login}
-            onFocus={() => setIsShowKeyboard(true)}
-            onChangeText={(value) =>
-              setState((prevState) => ({ ...prevState, login: value }))
-            }
-          />
+          <Text style={styles.title}>Увійти</Text>
           <TextInput
             style={styles.input}
             placeholder="Адреса електронної пошти"
@@ -63,6 +53,7 @@ export default function RegistrationScreen() {
               setState((prevState) => ({ ...prevState, email: value }))
             }
           />
+
           <View style={styles.inputBox}>
             <TextInput
               style={styles.input}
@@ -78,65 +69,54 @@ export default function RegistrationScreen() {
               style={styles.btnShowPassword}
               onPress={() => setIsShowPassword(true)}
             >
-              <Text style={styles.textShowPassword}>
-                {isShowPassword ? "Приховати" : "Показати"}
-              </Text>
+            <Text style={styles.textShowPassword}>Показати</Text>
             </TouchableOpacity>
           </View>
 
           <TouchableOpacity
             activeOpacity={0.7}
             style={styles.button}
-            onPress={registration}
+            onPress={login}
           >
-            <Text style={styles.text}>Зареєстуватися</Text>
+            <Text style={styles.text}>Увійти</Text>
           </TouchableOpacity>
-          <Text style={styles.link}>Вже є акаунт? Увійти</Text>
+              <Text
+              style={styles.link}
+              onPress={() => navigation.navigate("Registration")}
+              >
+                Немає акаунту? Зареєструватися
+              </Text>
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
+  </ImageBackground>
+</View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+  },
+
+  image: {
+    flex: 1,
+    justifyContent: "flex-end",
+    width: "100%",
+  },
+
+
   form: {
-    height: 549,
     width: "100%",
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
     position: "relative",
-    paddingTop: 92,
+    paddingTop: 32,
+    paddingBottom: 100,
     paddingHorizontal: 16,
     alignItems: "center",
-  },
-
-  image: {
-    position: "absolute",
-    width: 132,
-    height: 120,
-    backgroundColor: "#F6F6F6",
-    borderRadius: 16,
-    top: -50,
-  },
-
-  btnAddImage: {
-    position: "absolute",
-    bottom: 14,
-    right: -12,
-    width: 25,
-    height: 25,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 50,
-    borderWidth: 1,
-    borderColor: "#FF6C00",
-    color: "#FF6C00",
-    alignItems: "center",
-  },
-
-  textAddImage: {
-    fontSize: 15,
-    color: "#FF6C00",
   },
 
   title: {
@@ -187,7 +167,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#FFFFFF",
   },
-
   link: {
     color: "#1B4371",
   },
