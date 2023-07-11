@@ -179,7 +179,6 @@ const styles = StyleSheet.create({
   },
 
   boxTrash: {
-    // display: "flex",
     justifyContent: "center",
     alignItems: "center",
     width: 70,

@@ -1,49 +1,42 @@
-import { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-  Platform,
-  KeyboardAvoidingView,
-  Keyboard,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import MapView, { Marker } from "react-native-maps";
 
-export default function MapScreen() {
-return (
+const MapScreen = ({ route }) => {
+  const location = route.params.location;
+  return (
     <View style={styles.container}>
       <MapView
         style={styles.map}
         initialRegion={{
-          latitude: 37.78825,
-          longitude: -122.4324,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
+        latitude: location.latitude,
+        longitude: location.longitude,
+        latitudeDelta: 0.001,
+        longitudeDelta: 0.006,
         }}
-        onMapReady={() => console.log("Map is ready")}
-        onRegionChange={() => console.log("Region change")}
       >
         <Marker
-          coordinate={{ latitude: 37.78825, longitude: -122.4324 }}
-          title="travel photo"
+          coordinate={{
+            latitude: location.latitude,
+            longitude: location.longitude,
+          }}
+          title="I am here"
+          description="My location"
         />
       </MapView>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  map: {
+    map: {
     width: "100%",
     height: "100%",
   },
 });
 
-//AIzaSyC-mG90VLFL29WYlHt4Dw2oD_FUBXOuYm0
+export default MapScreen;
+

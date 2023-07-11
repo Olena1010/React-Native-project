@@ -46,7 +46,7 @@ export default function CommentsScreen({
     setIsShowKeyboard(false);
     Keyboard.dismiss();
     if (!textComment) {
-      return alert("Please enter your comment");
+      return alert("Будь ласка, введіть свій коментар");
     }
     const date = Moment().format("DD.MM.YYYY");
     const time = Moment().format("HH:mm");
@@ -76,7 +76,7 @@ export default function CommentsScreen({
         <TextInput
           style={styles.input}
           onChangeText={(value) => setTextComment(value)}
-          placeholder="Комментировать..."
+          placeholder="Коментувати..."
           value={textComment}
         />
         <TouchableOpacity
