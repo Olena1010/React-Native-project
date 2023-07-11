@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -12,6 +12,11 @@ import {
   ImageBackground,
 } from "react-native";
 
+import { useSelector, useDispatch } from "react-redux";
+import { loginUser, currentUser } from "../../redux/auth/authOperations";
+import { selectIsLoggedIn } from "../../redux/auth/authSelectors";
+
+
 const initialState = {
   email: "",
   password: "",
@@ -22,16 +27,23 @@ export default function LoginScreen({ navigation }) {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(true);
 
-  const login = () => {
+  const isLoggedIn = useSelector(selectIsLoggedIn);
+
+  const dispatch = useDispatch();
+
+  const login = async () => {
     if (!state.email || !state.password) {
       alert("Будь ласка, введіть всі дані!!!");
       return;
     }
     setIsShowKeyboard(false);
-    console.log(state);
     setIsShowPassword(false);
-    setState(initialState);
-     navigation.navigate("Home", { screen: "Posts" });
+        await dispatch(loginUser(state)).then((response) => {
+      response.meta.requestStatus === "fulfilled" &&
+        navigation.navigate("Home", { screen: "Posts" });
+      response.meta.requestStatus !== "fulfilled" &&
+        alert("Ваші дані неправильні!");
+    });
   };
 
   return (

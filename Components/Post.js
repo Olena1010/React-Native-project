@@ -10,6 +10,7 @@ import { Fontisto, SimpleLineIcons, Feather } from "@expo/vector-icons";
 
 export default function Post({
   image,
+  postId,
   text,
   comments = "0",
   likes = "0",
@@ -20,7 +21,7 @@ export default function Post({
   const addLikes = () => {
     setCountLikes((prevState) => Number(prevState) + 1);
   };
-  console.log(navigation);
+
 
   return (
     <View style={styles.container}>
@@ -30,7 +31,7 @@ export default function Post({
         <View style={styles.boxLikes}>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate("Comments")}
+            onPress={() => navigation.navigate("Comments", { image, postId })}
           >
             <Fontisto name="comment" size={24} color="#FF6C00" />
             <Text style={styles.text}>{comments}</Text>

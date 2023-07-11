@@ -13,6 +13,10 @@ import {
   ImageBackground,
 } from "react-native";
 
+import { useSelector, useDispatch } from "react-redux";
+import { registerUser } from "../../redux/auth/authOperations";
+import { selectIsLoggedIn } from "../../redux/auth/authSelectors";
+
 const initialState = {
   login: "",
   email: "",
@@ -25,16 +29,24 @@ export default function RegistrationScreen({ navigation }) {
   const [isShowPassword, setIsShowPassword] = useState(false);
   
 
-  const registration = () => {
+  const isLoggedIn = useSelector(selectIsLoggedIn);
+
+  const dispatch = useDispatch();
+
+  const registration = async () => {
     if (!state.login || !state.email || !state.password) {
       alert("Будь ласка, введіть всі дані!!!");
       return;
     }
     setIsShowKeyboard(false);
-    console.log(state);
     setIsShowPassword(false);
     setState(initialState);
-    navigation.navigate("Home", { screen: "Posts" });
+       await dispatch(registerUser(state)).then((response) => {
+      response.meta.requestStatus === "fulfilled" &&
+        navigation.navigate("Home", { screen: "Posts" });
+      response.meta.requestStatus !== "fulfilled" &&
+        alert("Ваші дані неправильні!");
+    });
   };
 
   return (

@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import { moduleName } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
+const NestedScreen = createStackNavigator();
 import DefaultScreenPosts from "../Nested/DefaultScreenPosts";
 import CommentsScreen from "../Nested/CommentsScreen";
 import MapScreen from "../Nested/MapScreen";
 
-const NestedScreen = createStackNavigator();
+
 
 export default function PostsScreen() {
-  // const [profiles, setProfiles] = useState(profilesAll);
   return (
     <NestedScreen.Navigator
       initialRouteName="DefaultScreen"

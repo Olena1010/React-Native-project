@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   StyleSheet,
   Text,
@@ -12,9 +13,24 @@ import {
 import { AntDesign, Feather } from "@expo/vector-icons";
 import Post from "../../Components/Post.js";
 import { postsAll } from "../../assets/images/data.js";
+import { logoutUser } from "../../redux/auth/authOperations";
+import { selectName } from "../../redux/auth/authSelectors.js";
+
 
 export default function ProfileScreen({ navigation }) {
   const [posts, setPosts] = useState(postsAll);
+
+  const nameUser = useSelector(selectName);
+
+  const dispatch = useDispatch();
+
+  const logout = async () => {
+    await dispatch(logoutUser()).then((response) => {
+      response.meta.requestStatus === "fulfilled" &&
+        navigation.navigate("Login");
+    });
+  };
+
 
   return (
     <SafeAreaView>
@@ -34,13 +50,13 @@ export default function ProfileScreen({ navigation }) {
                 <TouchableOpacity
                   style={styles.logout}
                   activeOpacity={0.5}
-                  onPress={() => navigation.navigate("Login")}
+                  onPress={logout}
                 >
                   <Feather name="log-out" size={24} color="#BDBDBD" />
                 </TouchableOpacity>
               </View>
 
-              <Text style={styles.title}>Natali Romanova</Text>
+              <Text style={styles.title}>{nameUser}</Text>
             </View>
 
             {posts.map((item) => (

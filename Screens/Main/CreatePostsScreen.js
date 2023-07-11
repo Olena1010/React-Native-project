@@ -8,32 +8,33 @@ import {
   KeyboardAvoidingView,
   Image,
 } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+
+import { uploadPhoto, createPost } from "../../redux/posts/postsOperations";
+import { selectId } from "../../redux/auth/authSelectors";
+
 
 import { MaterialIcons, Feather } from "@expo/vector-icons";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
 
-// const initialState = {
-//   name: "",
-//   location: "",
-// };
-
 export default function CreatePostsScreen({ navigation }) {
  
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-  const [cameraRef, setCameraRef] = useState(null);
+  const [camera, setCamera] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [title, setTitle] = useState("");
   const [inputLocation, setInputLocation] = useState("");
   const [location, setLocation] = useState(null);
-  const [hasPermission, setHasPermission] = useState(null);
+  const userId = useSelector(selectId);
+  const dispatch = useDispatch();
 
     useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        console.log("Permission to access location was denied");
+        console.log("У доступі до місцезнаходження відмовлено!");
       }
 
       let location = await Location.getCurrentPositionAsync({});
@@ -44,46 +45,35 @@ export default function CreatePostsScreen({ navigation }) {
       setLocation(coords);
     })();
   }, []);
-
-  console.log(location);
-
-useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
-      await MediaLibrary.requestPermissionsAsync();
-
-      setHasPermission(status === "granted");
-    })();
-  }, []);
-
-  if (hasPermission === null) {
-    return <View />;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
-
-
   
-  // const takePhoto = async () => {
-  //   const photo = await camera.takePictureAsync();
-  //   const locationPhoto = Location.reverseGeocodeAsync(location);
-  //   setInputLocation(locationPhoto);
-  //   setPhoto(photo.uri);
-  // };
+  const takePhoto = async () => {
+    const photo = await camera.takePictureAsync();
+        const locationPhoto = await Location.reverseGeocodeAsync(location).then(
+      (response) => {
+        return response[0];
+      }
+    );
+    setInputLocation(locationPhoto.city);
+    setPhoto(photo.uri);
+  };
   
 
-  const createPosts = () => {
+  const createPosts = async () => {
      if (!title || !inputLocation || !photo) {
       alert("Будь ласка, введіть всі дані!!!");
       return;
-    }
+     }
+     const { payload } = await dispatch(uploadPhoto(photo));
+    await dispatch(
+      createPost({ photo: payload, title, inputLocation, location, userId })
+    );
     navigation.navigate("DefaultScreen", { photo, title, inputLocation });
   };
 
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : ""}>
+         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
          <View style={styles.cameraBox}>
           <Camera style={styles.camera} ref={setCamera}>
             {photo && (
@@ -134,7 +124,8 @@ useEffect(() => {
           onPress={createPosts}
         >
           <Text style={styles.buttonText}>Опубліковати</Text>        
-        </TouchableOpacity>        
+          </TouchableOpacity>
+        </TouchableWithoutFeedback>  
       </KeyboardAvoidingView>
       <View style={styles.boxTrash}>
         <Feather
