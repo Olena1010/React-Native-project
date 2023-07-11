@@ -1,30 +1,25 @@
 import React, { useState } from "react";
-import { StyleSheet, SafeAreaView, FlatList } from "react-native";
+import { moduleName } from "react-native";
+import { createStackNavigator } from "@react-navigation/stack";
+import DefaultScreenPosts from "../Nested/DefaultScreenPosts";
+import CommentsScreen from "../Nested/CommentsScreen";
+import MapScreen from "../Nested/MapScreen";
 
-import Profile from "../../Components/Profile.js";
-
-import { profilesAll } from "../../assets/images/data.js";
+const NestedScreen = createStackNavigator();
 
 export default function PostsScreen() {
-  const [profiles, setProfiles] = useState(profilesAll);
+  // const [profiles, setProfiles] = useState(profilesAll);
   return (
-    <SafeAreaView style={styles.container}>
-      <FlatList
-        data={profiles}
-        renderItem={({ item }) => (
-          <Profile avatar={item.avatar} name={item.name} email={item.email} />
-        )}
-        keyExtractor={(item) => item.id}
+    <NestedScreen.Navigator
+      initialRouteName="DefaultScreen"
+      screenOptions={{ headerShown: false }}
+    >
+      <NestedScreen.Screen
+        name="DefaultScreen"
+        component={DefaultScreenPosts}
       />
-    </SafeAreaView>
+         <NestedScreen.Screen name="Comments" component={CommentsScreen} />
+      <NestedScreen.Screen name="Map" component={MapScreen} />
+    </NestedScreen.Navigator>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-    paddingTop: 32,
-    paddingLeft: 16,
-  },
-});

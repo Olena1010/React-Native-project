@@ -7,7 +7,7 @@ export const profilesAll = [
   {
     id: "45k6-j54k-4jth",
     name: "Natali Romanova",
-    email: "dlj",
+    email: "email@example.com",
     avatar: avatar1,
   },
   {

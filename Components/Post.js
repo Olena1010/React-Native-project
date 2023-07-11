@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -7,25 +8,44 @@ import {
 } from "react-native";
 import { Fontisto, SimpleLineIcons, Feather } from "@expo/vector-icons";
 
-export default function Post({ image, text, comments, likes, location }) {
+export default function Post({
+  image,
+  text,
+  comments = "0",
+  likes = "0",
+  location,
+  navigation,
+}) {
+  const [countLikes, setCountLikes] = useState(likes);
+  const addLikes = () => {
+    setCountLikes((prevState) => Number(prevState) + 1);
+  };
+  console.log(navigation);
+
   return (
     <View style={styles.container}>
       <ImageBackground source={image} style={styles.image} />
       <Text style={styles.title}>{text}</Text>
       <View style={styles.boxInfo}>
         <View style={styles.boxLikes}>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate("Comments")}
+          >
             <Fontisto name="comment" size={24} color="#FF6C00" />
             <Text style={styles.text}>{comments}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button}>
+           <TouchableOpacity style={styles.button} onPress={addLikes}>
             <SimpleLineIcons name="like" size={24} color="#FF6C00" />
-            <Text style={styles.text}>{likes}</Text>
+            <Text style={styles.text}>{countLikes}</Text>
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.button}>
+          <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate("Map")}
+        >
           <Feather name="map-pin" size={24} color="#BDBDBD" />
           <Text style={styles.textLocation}>{location}</Text>
         </TouchableOpacity>
@@ -49,6 +69,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     overflow: "hidden",
     marginBottom: 8,
+    backgroundColor: "#212121",
   },
 
   title: {

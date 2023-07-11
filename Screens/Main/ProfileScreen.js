@@ -45,11 +45,13 @@ export default function ProfileScreen({ navigation }) {
 
             {posts.map((item) => (
               <Post
+                key={item.id}
                 image={item.image}
                 text={item.text}
                 comments={item.comments}
                 likes={item.likes}
                 location={item.location}
+                navigation={navigation}
               />
             ))}
           </View>

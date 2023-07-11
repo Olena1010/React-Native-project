@@ -15,7 +15,8 @@ export default function Profile({ avatar, name, email }) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    marginBottom: 15,
+    marginBottom: 32,
+    paddingLeft: 16,
   },
 
   images: {
