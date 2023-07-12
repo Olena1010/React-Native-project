@@ -1,97 +1,92 @@
 import React from "react";
+import { Image, TouchableOpacity } from "react-native";
 import { useDispatch } from "react-redux";
-import { SimpleLineIcons, Feather } from "@expo/vector-icons";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
+import { authSignOutUser } from "../../redux/auth/authOperations";
+
+import PostsScreen from "./PostsScreen";
+import CreatePostsScreen from "./CreatePostsScreen";
+import ProfileScreen from "./ProfileScreen";
+
+import SvgLogout from "../../assets/svg/logoutIcon";
+import SvgPosts from "../../assets/svg/postsIcon";
+import SvgCreate from "../../assets/svg/createIcon";
+import SvgProfile from "../../assets/svg/profileIcon";
 
 const Tabs = createBottomTabNavigator();
 
-import CreatePostsScreen from "./CreatePostsScreen";
-import PostsScreen from "./PostsScreen";
-import ProfileScreen from "./ProfileScreen";
-import { logoutUser } from "../../redux/auth/authOperations";
-
-export default function Home({ navigation }) {
+const Home = ({ navigation }) => {
   const dispatch = useDispatch();
-
-  const logout = async () => {
-    await dispatch(logoutUser()).then((response) => {
-      response.meta.requestStatus === "fulfilled" &&
-        navigation.navigate("Login");
-    });
+  const signOut = () => {
+    dispatch(authSignOutUser());
   };
-
   return (
-    <Tabs.Navigator
-      initialRouteName="Login"
-      screenOptions={{
-        tabBarShowLabel: false,
-        tabBarStyle: {
-          height: 80,
-        },
-      }}
-    >
+    <Tabs.Navigator>
       <Tabs.Screen
+        options={{
+          title: "Публікації",
+          headerTintColor: "#000",
+          headerTitleStyle: {
+            fontWeight: "bold",
+            fontSize: 20,
+          },
+          headerRight: () => (
+            <TouchableOpacity
+              style={{ marginRight: 10 }}
+              onPress={() => {
+                signOut();
+              }}
+            >
+              <Image
+                source={require("../../assets/logOut.jpg")}
+                style={{ width: 24, height: 24 }}
+              />
+            </TouchableOpacity>
+          ),
+
+          tabBarIcon: ({ color, size }) => (
+            <SvgPosts color={color} size={size} />
+          ),
+          tabBarShowLabel: false,
+        }}
         name="Posts"
         component={PostsScreen}
-        options={{
-          tabBarIcon: ({ focused, size, color }) => (
-            <SimpleLineIcons name="grid" size={size} color={color} />
-          ),
-          title: "Публікації",
-          headerTitleAlign: "center",
-          headerRightContainerStyle: { paddingRight: 20 },
-          headerRight: () => (
-            <TouchableOpacity activeOpacity={0.5} onPress={logout}>
-              <Feather name="log-out" size={24} color="gray" />
-            </TouchableOpacity>
-          ),
-        }}
       />
       <Tabs.Screen
-        name="CreatePosts"
-        component={CreatePostsScreen}
         options={{
-          tabBarIcon: ({ focused, size, color }) => (
-            <TouchableOpacity
-              style={styles.addButton}
-              activeOpacity={0.5}
-              onPress={() => navigation.navigate("CreatePosts")}
-            >
-              <Text style={styles.addButtonText}>+</Text>
-            </TouchableOpacity>
-          ),
-
           title: "Створити публікацію",
-          headerTitleAlign: "center",
+          tabBarIcon: ({ color, size }) => (
+            <SvgCreate color={color} size={size} />
+          ),
+          tabBarShowLabel: false,
         }}
+        name="Create"
+        component={CreatePostsScreen}
       />
       <Tabs.Screen
-        name="Profile"
-        component={ProfileScreen}
         options={{
           headerShown: false,
-          tabBarIcon: ({ focused, size, color }) => (
-            <Feather name="user" size={size} color={color} />
+
+          tabBarIcon: ({ color, size }) => (
+            <SvgProfile color={color} size={size} />
           ),
+          tabBarShowLabel: false,
         }}
+        name="Profile"
+        component={ProfileScreen}
       />
     </Tabs.Navigator>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  addButton: {
-    backgroundColor: "#FF6C00",
-    height: 40,
-    width: 70,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 20,
-  },
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     alignItems: "center",
+//     justifyContent: "center",
+//   },
+// });
 
-  addButtonText: {
-    color: "#ffffff",
-    fontSize: 28,
-  },
-});
+export default Home;

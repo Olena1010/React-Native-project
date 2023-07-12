@@ -62,7 +62,7 @@ export default LoginScreen = ({ navigation }) => {
                 paddingBottom: isShowKeyboard ? 32 : 140,
               }}
             >
-              <Text style={styles.title}>Вхід</Text>
+              <Text style={styles.title}>Увійти</Text>
 
               <View style={{ marginBottom: 16 }}>
                 <TextInput
@@ -125,7 +125,7 @@ export default LoginScreen = ({ navigation }) => {
                 onPress={() => navigation.navigate("Registration")}
               >
                 <Text style={styles.signinText}>
-                  Ще немає аккаунта? Зареєструватися
+                  Немає аккаунта? Зареєструватися
                 </Text>
               </TouchableOpacity>
             </View>
@@ -158,6 +158,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     fontSize: 30,
     marginBottom: 33,
+    
   },
   input: {
     marginHorizontal: 16,
@@ -189,7 +190,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#FF6C00",
+    
   },
+  btnTitle: {
+  color: "#FFFFFF",
+  },
+
   signinText: {
     color: "#1B4371",
     fontSize: 18,

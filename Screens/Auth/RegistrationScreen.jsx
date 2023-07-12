@@ -15,7 +15,7 @@ import {
 import { useDispatch } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { authSignUpUser } from "../../redux/auth/authSelectors";
+import { authSignUpUser } from "../../redux/auth/authOperations";
 import { storage } from "../../firebase/config";
 import SvgAddAvatar from "../../assets/svg/addAvatar";
 
@@ -137,7 +137,7 @@ export default Registrationscreen = ({ navigation }) => {
     } else {
       dispatch(
         authSlice.actions.authSetError({
-          errorMessage: "Please fill in all fields.",
+          errorMessage: "Будь ласка, заповніть усі поля.",
         })
       );
     }
@@ -267,7 +267,7 @@ export default Registrationscreen = ({ navigation }) => {
                 activeOpacity={0.7}
                 onPress={() => navigation.navigate("Login")}
               >
-                <Text style={styles.signinText}>Уже є аккаунт? Увійти</Text>
+                <Text style={styles.signinText}>Вже є аккаунт? Увійти</Text>
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>

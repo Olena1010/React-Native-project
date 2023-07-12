@@ -1,27 +1,31 @@
-import { StyleSheet, View } from "react-native";
-
+import React from "react";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
-const MapScreen = ({ route }) => {
-  const location = route.params.location;
+const MapScreen = ({ navigation, route }) => {
+  const { latitude, longitude } = route.params.location;
+  const photoName = route.params.photoName;
   return (
     <View style={styles.container}>
+      <Text>Map Screen</Text>
       <MapView
-        style={styles.map}
+        style={styles.mapStyle}
+        mapType="standard"
         initialRegion={{
-        latitude: location.latitude,
-        longitude: location.longitude,
-        latitudeDelta: 0.001,
-        longitudeDelta: 0.006,
+          latitude,
+          longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.06,
         }}
       >
         <Marker
           coordinate={{
-            latitude: location.latitude,
-            longitude: location.longitude,
+            latitude,
+            longitude,
           }}
-          title="I am here"
-          description="My location"
+          title={photoName}
+          description="Сфотографовано тут"
+          pinColor="#FF6C00"
         />
       </MapView>
     </View>
@@ -31,12 +35,13 @@ const MapScreen = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
-    map: {
-    width: "100%",
-    height: "100%",
+  mapStyle: {
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
   },
 });
 
 export default MapScreen;
-
