@@ -17,7 +17,7 @@ import * as ImagePicker from "expo-image-picker";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { authSignUpUser } from "../../redux/auth/authSelectors";
 import { storage } from "../../firebase/config";
-import SvgAddAvatar from "../../assets/images/addAvatar";
+import SvgAddAvatar from "../../assets/svg/addAvatar";
 
 const initialState = {
   login: "",

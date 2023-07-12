@@ -14,7 +14,7 @@ import {
 import { Feather } from "@expo/vector-icons";
 import Moment from "moment";
 
-import Comment from "../../Components/Comment";
+import Comment from "../../Components/Main";
 import {
   createComment,
   getAllComments,

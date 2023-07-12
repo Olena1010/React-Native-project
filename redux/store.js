@@ -1,17 +1,9 @@
-import {
-  configureStore,
-  combineReducers,
-  getDefaultMiddleware,
-} from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 
-import { authReducer } from "./auth/authSlice";
-import { postsReducer } from "./posts/postsSlice";
-import { commentsReducer } from "./comments/commentsSlice";
+import { authSlice } from "./auth/authSlice";
 
 const rootReducer = combineReducers({
-  auth: authReducer,
-  posts: postsReducer,
-  comments: commentsReducer,
+  [authSlice.name]: authSlice.reducer,
 });
 
 export const store = configureStore({
