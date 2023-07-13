@@ -158,6 +158,8 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     fontSize: 30,
     marginBottom: 33,
+    letterSpacing: 0.3,
+    color: "#212121",
     
   },
   input: {
