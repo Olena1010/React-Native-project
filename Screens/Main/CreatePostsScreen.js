@@ -54,7 +54,7 @@ const CreatePostsScreen = ({ navigation }) => {
       if (status === "granted") {
         setStartCamera(true);
       } else {
-        Alert.alert("Доступ заборонено");
+        Alert.alert("Access denied");
       }
       const mediaLibraryPermission =
         await MediaLibrary.requestPermissionsAsync();

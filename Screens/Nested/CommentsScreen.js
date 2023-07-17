@@ -181,7 +181,7 @@ const CommentsScreen = ({ route }) => {
                 style={styles.inputText}
                 onBlur={keyboardHide}
                 onFocus={() => setIsShowKeyboard(true)}
-                placeholder="Прокоментувати..."
+                placeholder="Коментувати......"
                 value={comment}
                 onChangeText={(value) => {
                   setComment(value);
