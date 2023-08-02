@@ -16,6 +16,7 @@ import {
   orderBy,
   doc,
   getDoc,
+  onSnapshot
 } from "firebase/firestore";
 
 import { db } from "../../firebase/config";
@@ -27,46 +28,58 @@ export default PostsScreen = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const getAllPosts = async () => {
+useEffect(() => {
     setLoading(true);
-    try {
-      const postsRef = await collection(db, "posts");
-      const q = query(postsRef, orderBy("createdAt", "desc"));
-      const snapshot = await getDocs(q);
-      let posts = [];
 
-      for (const post of snapshot.docs) {
-        const postRef = await doc(db, "posts", post.id);
-        const commentsRef = collection(postRef, "comments");
-        const commentsSnapshot = await getDocs(commentsRef);
-        const commentsCount = commentsSnapshot.size;
+    const fetchPosts = async () => {
+      try {
+        const postsRef = collection(db, "posts");
+        const q = query(postsRef, orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        let posts = [];
 
-        const userRef = doc(db, "users", post.data().userId);
-        const userSnap = await getDoc(userRef);
+        for (const post of snapshot.docs) {
+          const postRef = doc(db, "posts", post.id);
+          const commentsRef = collection(postRef, "comments");
+          const commentsSnapshot = await getDocs(commentsRef);
+          const commentsCount = commentsSnapshot.size;
+          const userRef = doc(db, "users", post.data().userId);
+          const userSnap = await getDoc(userRef);
 
-        posts.push({
-          id: post.id,
-          ...post.data(),
-          commentsCount,
+          posts.push({
+            id: post.id,
+            ...post.data(),
+            commentsCount,
+            nickname: userSnap.data().nickname,
+            email: userSnap.data().email,
+            photoUser: userSnap.data().photoURL,
+          });
+        }
 
-          nickname: userSnap.data().nickname,
-          email: userSnap.data().email,
-          photoUser: userSnap.data().photoURL,
-        });
+        setPosts(posts);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.log("Error", error);
       }
+    };
 
-      setPosts(posts);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.log("Error", error);
-    }
-  };
+    const unsubscribe = onSnapshot(
+      query(collection(db, "posts"), orderBy("createdAt", "desc")),
+      (snapshot) => {
+        fetchPosts();
+      },
+      (error) => {
+        console.log("Error fetching posts:", error);
+        setLoading(false);
+      }
+    );
 
-  useEffect(() => {
-    getAllPosts();
-  }, []);
-
+    return () => {
+      unsubscribe();
+    };
+}, []);
+  
   return (
     <View style={styles.container}>
       {loading && (
@@ -205,4 +218,3 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
   },
 });
-

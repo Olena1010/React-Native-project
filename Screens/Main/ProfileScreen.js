@@ -19,6 +19,7 @@ import {
   orderBy,
   doc,
   where,
+  onSnapshot
 } from "firebase/firestore";
 
 import { authSignOutUser, authEditProfile } from "../../redux/auth/authOperations";
@@ -35,22 +36,6 @@ const ProfileScreen = ({ navigation }) => {
   const [currentAvatar, setCurrentAvatar] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    getUsersPosts();
-  }, []);
-
-  useEffect(() => {
-    if (!selectedImg) {
-      setSelectedImg(photo);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (currentAvatar !== null && currentAvatar !== photo) {
-      uploadPhotoToServer();
-    }
-  }, [currentAvatar]);
-
   const { userId, nickname, photo } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
@@ -62,7 +47,7 @@ const ProfileScreen = ({ navigation }) => {
 
   const getUsersPosts = async () => {
     try {
-      const postsRef = await collection(db, "posts");
+      const postsRef = collection(db, "posts");
       const q = query(
         postsRef,
         where("userId", "==", userId),
@@ -72,7 +57,7 @@ const ProfileScreen = ({ navigation }) => {
       let posts = [];
 
       for (const post of snapshot.docs) {
-        const postRef = await doc(db, "posts", post.id);
+        const postRef = doc(db, "posts", post.id);
         const commentsRef = collection(postRef, "comments");
         const commentsSnapshot = await getDocs(commentsRef);
         const commentsCount = commentsSnapshot.size;
@@ -90,6 +75,39 @@ const ProfileScreen = ({ navigation }) => {
     }
   };
 
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      query(collection(db, "posts"), orderBy("createdAt", "desc")),
+      (snapshot) => {
+        getUsersPosts();
+      },
+      (error) => {
+        console.log("Error fetching posts:", error);
+        setLoading(false);
+      }
+    );
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    getUsersPosts();
+  }, []);
+
+  useEffect(() => {
+    if (!selectedImg) {
+      setSelectedImg(photo);
+    }
+  }, [photo]);
+
+  useEffect(() => {
+    if (currentAvatar !== null && currentAvatar !== photo) {
+      uploadPhotoToServer();
+    }
+  }, [currentAvatar]);
+
   const downloadPhoto = async () => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -99,7 +117,7 @@ const ProfileScreen = ({ navigation }) => {
         quality: 1,
       });
 
-      if (!result.canceled) {
+      if (!result.cancelled) {
         setSelectedImg(result.assets[0].uri);
         setCurrentAvatar(result.assets[0].uri);
       }
@@ -111,7 +129,7 @@ const ProfileScreen = ({ navigation }) => {
   const uploadPhotoToServer = async () => {
     try {
       setLoading(true);
-      const response = await fetch(selectedImg);
+      const response = await fetch(currentAvatar);
       const file = await response.blob();
       const uniquePhotoId = Date.now().toString();
 
